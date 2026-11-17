@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Académie Écrans LED</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Plan : une colonne de lecture étroite, pensée pour le téléphone. Vert = signal (DATA), rouge = courant (POWER), comme sur les plans du fabricant. */
+:root{
+  --bg:#F1F4F8; --surf:#FFFFFF; --ink:#111B2A; --mut:#536176; --line:#D3DAE4;
+  --acc:#0A7A45; --acc-soft:#DCF1E5; --cop:#C0281F; --cop-soft:#FBE3E0;
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",Verdana,system-ui,sans-serif;
+  --mono:"JetBrains Mono",Consolas,"Courier New",monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0C1118; --surf:#141C27; --ink:#E6ECF4; --mut:#9AA8BA; --line:#283447;
+    --acc:#43CC86; --acc-soft:#143324; --cop:#FF7468; --cop-soft:#3D1B18;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0C1118; --surf:#141C27; --ink:#E6ECF4; --mut:#9AA8BA; --line:#283447;
+  --acc:#43CC86; --acc-soft:#143324; --cop:#FF7468; --cop-soft:#3D1B18;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--body)}
+a{color:var(--acc)}
+:focus-visible{outline:3px solid var(--cop);outline-offset:2px}
+.wrap{max-width:680px;margin:0 auto;padding:0 18px 64px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0;border-bottom:1px solid var(--line)}
+.brand{font:800 18px/1 var(--display);color:var(--ink);text-decoration:none;letter-spacing:-.01em}
+.brand span{color:var(--acc)}
+.top a.home{font-size:15px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;letter-spacing:-.015em;line-height:1.15}
+h1{font-size:34px;font-weight:800;margin:28px 0 12px}
+h2{font-size:24px;font-weight:800;margin:44px 0 10px}
+h3{font-size:18px;font-weight:600;margin:26px 0 6px}
+p{margin:0 0 14px}
+.eyebrow{font:700 13px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--cop);margin-top:28px}
+.eyebrow + h1{margin-top:10px}
+.lead{font-size:19px;color:var(--mut)}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 8px;padding:0;list-style:none;font-size:14px;color:var(--mut)}
+.meta li{border:1px solid var(--line);border-radius:999px;padding:2px 10px;background:var(--surf)}
+.btn{display:inline-block;font:700 16px/1 var(--body);background:var(--acc);color:var(--bg);border:0;border-radius:10px;padding:14px 18px;text-decoration:none;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--acc);border:1.5px solid var(--acc)}
+.btn[disabled]{opacity:.6;cursor:default}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0 6px;padding:0;list-style:none}
+.steps li{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:14px;line-height:1.35}
+.steps b{display:block;font:800 15px/1.2 var(--display);color:var(--acc);margin-bottom:4px}
+@media (max-width:460px){.steps{grid-template-columns:1fr}}
+.track{margin-top:34px}
+.track h2{margin:0 0 2px;font-size:21px}
+.track > p{color:var(--mut);font-size:15px;margin-bottom:10px}
+.mods{list-style:none;margin:0;padding:0;border-left:3px solid var(--line);display:grid;gap:8px}
+.mods li{margin-left:14px}
+.mods a,.mods div.soon{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:12px;text-decoration:none;color:var(--ink)}
+.mods a{border-color:var(--acc)}
+.mods .n{font:800 15px/34px var(--display);width:34px;height:34px;text-align:center;border-radius:50%;background:var(--acc-soft);color:var(--acc)}
+.mods .soon .n{background:var(--bg);color:var(--mut)}
+.mods .soon{color:var(--mut)}
+.mods strong{display:block;font-size:16px;line-height:1.3}
+.mods small{display:block;font-size:14px;color:var(--mut);line-height:1.35}
+.tag{font-size:12px;font-weight:700;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.tag.open{background:var(--acc);color:var(--bg)}
+.tag.done{background:var(--cop-soft);color:var(--cop)}
+.tag.wait{border:1px solid var(--line)}
+.fig,.note,.quiz,pre{border-radius:14px}
+.note{background:var(--acc-soft);padding:14px 16px;margin:18px 0}
+.note.warn{background:var(--cop-soft)}
+.note > :last-child{margin-bottom:0}
+.note b.k{display:block;font:800 14px/1.2 var(--display);letter-spacing:.04em;text-transform:uppercase;color:var(--acc);margin-bottom:6px}
+.note.warn b.k{color:var(--cop)}
+ul.plain,ol.plain{padding-left:22px;margin:0 0 14px}
+ul.plain li,ol.plain li{margin-bottom:6px}
+figure{margin:0}
+.fig{background:var(--surf);border:1px solid var(--line);margin:20px 0;padding:12px 12px 4px}
+.fig svg{display:block;width:100%;max-width:420px;height:auto;margin:0 auto;color:var(--ink)}
+.fig figcaption{font-size:14.5px;color:var(--mut);padding:10px 4px 8px;line-height:1.45}
+svg .t{fill:currentColor;font:400 12px var(--body)}
+svg .tb{fill:currentColor;font:700 12.5px var(--body)}
+svg .th{fill:currentColor;font:800 14px var(--display)}
+svg .ts{fill:currentColor;font:400 11px var(--body)}
+svg .tk{fill:currentColor;font:400 12.5px var(--mono)}
+svg .tm{fill:var(--mut);font:400 11.5px var(--body)}
+svg .ta{fill:var(--acc);font:700 12.5px var(--body)}
+svg .tc{fill:var(--cop);font:700 12.5px var(--body)}
+svg .box{fill:var(--bg);stroke:var(--line);stroke-width:1}
+svg .ln{stroke:currentColor;stroke-width:1.5;fill:none}
+svg .lm{stroke:var(--line);stroke-width:1;fill:none}
+svg .la{stroke:var(--acc);stroke-width:2;fill:none}
+svg .lc{stroke:var(--cop);stroke-width:2;fill:none}
+svg .dash{stroke-dasharray:5 4}
+svg .fa{fill:var(--acc)} svg .fc{fill:var(--cop)} svg .fi{fill:currentColor} svg .fm{fill:var(--mut)}
+svg .fas{fill:var(--acc-soft)} svg .fcs{fill:var(--cop-soft)} svg .fs{fill:var(--surf)}
+pre{background:var(--ink);color:var(--bg);font:400 14px/1.55 var(--mono);padding:14px;overflow-x:auto;margin:16px 0}
+pre .c{opacity:.65}
+pre.out{background:var(--surf);color:var(--ink);border:1px solid var(--line);border-left:4px solid var(--acc);margin-top:-8px}
+details{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:14px 0}
+summary{font-weight:700;color:var(--acc);cursor:pointer}
+code{font-family:var(--mono);font-size:.9em;background:var(--acc-soft);padding:1px 5px;border-radius:5px}
+pre code{background:none;padding:0;font-size:1em}
+.tbl{overflow-x:auto;margin:16px 0}
+table{border-collapse:collapse;width:100%;font-size:15px;background:var(--surf)}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{font-weight:700;background:var(--acc-soft)}
+table.df th,table.df td{white-space:nowrap;font:400 13.5px var(--mono);text-align:right}
+td.num{font-variant-numeric:tabular-nums}
+dl.words{margin:0;display:grid;gap:10px}
+dl.words div{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+dl.words dt{font-weight:700}
+dl.words dd{margin:2px 0 0;color:var(--mut);font-size:15.5px}
+.quiz{background:var(--surf);border:1px solid var(--line);padding:14px;margin:14px 0}
+.quiz .q{font-weight:700;margin-bottom:10px}
+.quiz .opts{display:grid;gap:8px}
+.quiz button{font:400 16px/1.35 var(--body);text-align:left;background:var(--bg);color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;cursor:pointer}
+.quiz button.ok{border-color:var(--acc);background:var(--acc-soft);font-weight:700}
+.quiz button.ko{border-color:var(--cop);background:var(--cop-soft)}
+.quiz .fb{margin:10px 0 0;font-size:15.5px}
+.quiz .fb b{color:var(--acc)}
+.quiz .fb.no b{color:var(--cop)}
+.end{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:36px;padding-top:22px;border-top:1px solid var(--line)}
+.end .sp{flex:1}
+.loading{color:var(--mut);padding:40px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#accueil">Académie <span>Écrans LED</span></a>
+    <a class="home" href="#accueil" id="backHome" hidden>Tous les modules</a>
+  </header>
+  <main id="view"></main>
+</div>
+<script>
+(function(){
+  var CFG = {
+    surtitre: "De zéro à installateur pro",
+    titre: "Installer n'importe quel écran géant LED, sans hésiter",
+    accroche: "26 modules courts. Chacun explique une seule idée avec des schémas, puis vous la fait appliquer sur vos deux vrais projets : les 3 écrans outdoor et les 2 écrans indoor des plans Ledful.",
+    etapes: [["1. L'idée","Des mots simples et un dessin qui montre le mécanisme."],
+             ["2. À la main","Le geste ou le calcul, pas à pas, sur un petit exemple."],
+             ["3. Sur le chantier","La même chose sur vos vrais plans, du début à la fin."]]
+  };
+  var PARCOURS = [
+    {t:"Les fondations", d:"Comprendre de quoi est fait un écran et savoir lire le plan du fabricant."},
+    {t:"Structure et fixation", d:"Tout ce qui porte l'écran : supports, murs, chevilles, niveau, montage des caissons."},
+    {t:"L'électricité", d:"Alimenter l'écran sans rien griller et sans faire sauter les disjoncteurs."},
+    {t:"Le signal et le contrôle", d:"Amener l'image jusqu'à chaque caisson, puis configurer et régler l'écran."},
+    {t:"Le métier, du premier appel à la remise", d:"Visite, devis, chantier complet, dépannage et remise au client."}
+  ];
+  // ok:1 seulement quand le fichier modules/mN.js est publié. min = durée en minutes.
+  var MODULES = [
+    {n:1,ok:1,p:0,t:"De quoi est fait un écran géant",d:"De la LED au pixel, du module au caisson, du caisson à l'écran.",min:20},
+    {n:2,ok:1,p:0,t:"Les grandes familles d'écrans",d:"Indoor ou outdoor, fixe ou location, maintenance avant ou arrière.",min:20},
+    {n:3,ok:1,p:0,t:"Le pas de pixel et la résolution",d:"Compter les pixels d'un écran et choisir le pas selon la distance.",min:25},
+    {n:4,ok:1,p:0,t:"Lire un plan de fabricant",d:"Vos deux plans Ledful décortiqués : vues, cotes, couleurs, mots chinois utiles.",min:30},
+
+    {n:5,ok:1,p:1,t:"Les types de supports",d:"Mural, encastré, suspendu, poteau, toit, socle, empilé au sol, accroché au truss.",min:30},
+    {n:6,ok:1,p:1,t:"Reconnaître un mur et choisir la cheville",d:"Béton, brique pleine, brique creuse, cloison : quelle fixation pour quelle charge.",min:25},
+    {n:7,ok:1,p:1,t:"Niveau, aplomb et planéité",d:"Tracer au laser et contrôler la structure avant de poser un seul caisson.",min:25},
+    {n:8,ok:1,p:1,t:"Accrocher les caissons",d:"Boulons, rails, verrous rapides, ordre de montage, joints entre caissons.",min:30},
+    {n:9,ok:1,p:1,t:"Outdoor : l'eau, le vent, la chaleur",d:"Étanchéité, trous d'évacuation, ventilation, passerelle de maintenance.",min:30},
+
+    {n:10,ok:1,p:2,t:"Volts, ampères, watts",d:"Les trois mots de l'électricité et le calcul du courant d'un écran.",min:20},
+    {n:11,ok:1,p:2,t:"Répartir l'écran en lignes",d:"Combien de caissons par disjoncteur : règle des 80 % et courant d'appel.",min:30},
+    {n:12,ok:1,p:2,t:"Tableau, câbles et protections",d:"Section des câbles, différentiel, parafoudre, stabilisateur, onduleur.",min:30},
+    {n:13,ok:1,p:2,t:"La terre et les contrôles avant d'allumer",d:"Phase, neutre, terre : les mesures au multimètre et la première mise sous tension.",min:25},
+
+    {n:14,p:3,t:"Le chemin de l'image",d:"Source, processeur, carte d'envoi, cartes de réception, modules.",min:25},
+    {n:15,p:3,t:"Dessiner le câblage du signal",d:"Limite de pixels par port, zigzag, colonnes, boucle de secours.",min:30},
+    {n:16,p:3,t:"Câble réseau, RJ45 et fibre",d:"Sertir une prise, tester un câble, dépasser 100 mètres.",min:25},
+    {n:17,p:3,t:"Configurer l'écran dans le logiciel",d:"Fichier de configuration, position des caissons, sauvegarde.",min:35},
+    {n:18,p:3,t:"Régler l'image",d:"Luminosité, couleurs, rafraîchissement, uniformité entre modules.",min:25},
+
+    {n:19,p:4,t:"La visite technique",d:"Tout ce qu'il faut mesurer, photographier et demander avant de chiffrer.",min:25},
+    {n:20,ok:1,p:4,t:"Le devis complet",d:"Tout ce qui s'ajoute aux écrans, et la liste « inclus / non inclus ».",min:35},
+    {n:21,p:4,t:"Les outils et la réception du matériel",d:"La caisse de l'installateur, le contrôle à la livraison, le test au sol.",min:25},
+    {n:22,p:4,t:"Chantier complet : les 2 écrans indoor",d:"Le projet 260199 de A à Z, rails sur mur en briques, 56 caissons.",min:40},
+    {n:23,p:4,t:"Chantier complet : les 3 écrans outdoor",d:"Le projet 260233 de A à Z, caissons acier, maintenance arrière.",min:40},
+    {n:24,p:4,t:"Dépanner sans paniquer",d:"Caisson noir, module d'une autre couleur, image coupée : trouver la cause.",min:35},
+    {n:25,p:4,t:"Remise au client et maintenance",d:"Tests finaux, procès-verbal, formation, contrat d'entretien.",min:25},
+    {n:26,p:4,t:"Révision générale",d:"Les formules, les fiches réflexes et un test final.",min:30}
+  ];
+  var REG = {};
+  var view = document.getElementById('view');
+  var back = document.getElementById('backHome');
+
+  function done(n, set){
+    try{
+      var d = JSON.parse(localStorage.getItem('aca-done') || '{}');
+      if(set){ d[n] = 1; localStorage.setItem('aca-done', JSON.stringify(d)); }
+      return !!d[n];
+    }catch(e){ return false; }
+  }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+
+  function home(){
+    back.hidden = true;
+    var first = MODULES.filter(function(m){return m.ok && !done(m.n);})[0] || MODULES[0];
+    var h = '<p class="eyebrow">' + esc(CFG.surtitre) + '</p><h1>' + esc(CFG.titre) + '</h1>'
+      + '<p class="lead">' + esc(CFG.accroche) + '</p>'
+      + (first.ok
+          ? '<p><a class="btn" href="#module-' + first.n + '">' + (first.n === 1 ? 'Commencer le module 1' : 'Reprendre au module ' + first.n) + '</a></p>'
+          : '<p class="note"><b class="k">En construction</b>Les modules ouvrent un par un, dans l\'ordre.</p>')
+      + '<ol class="steps">' + CFG.etapes.map(function(e){ return '<li><b>' + esc(e[0]) + '</b>' + esc(e[1]) + '</li>'; }).join('') + '</ol>';
+    PARCOURS.forEach(function(p, i){
+      h += '<section class="track"><h2>' + esc(p.t) + '</h2><p>' + esc(p.d) + '</p><ol class="mods">';
+      MODULES.filter(function(m){return m.p === i;}).forEach(function(m){
+        var inner = '<span class="n">' + m.n + '</span><span><strong>' + esc(m.t) + '</strong><small>' + esc(m.d) + '</small></span>';
+        if(m.ok){
+          h += '<li><a href="#module-' + m.n + '">' + inner + (done(m.n) ? '<span class="tag done">Terminé</span>' : '<span class="tag open">Ouvrir</span>') + '</a></li>';
+        } else {
+          h += '<li><div class="soon">' + inner + '<span class="tag wait">Bientôt</span></div></li>';
+        }
+      });
+      h += '</ol></section>';
+    });
+    view.innerHTML = h;
+  }
+
+  function lesson(n){
+    var meta = MODULES[n-1], mod = REG[n];
+    back.hidden = false;
+    var prev = MODULES[n-2], next = MODULES[n];
+    view.innerHTML = '<p class="eyebrow">Module ' + n + ' · ' + esc(PARCOURS[meta.p].t) + '</p>'
+      + '<h1>' + esc(meta.t) + '</h1>'
+      + '<ul class="meta"><li>Environ ' + meta.min + ' min</li><li>' + esc(mod.niveau || 'Aucun prérequis') + '</li></ul>'
+      + mod.html
+      + '<div class="end">'
+      + '<button class="btn" id="fin"' + (done(n) ? ' disabled' : '') + '>' + (done(n) ? 'Module terminé' : 'J\'ai terminé ce module') + '</button>'
+      + '<span class="sp"></span>'
+      + (prev && prev.ok ? '<a class="btn ghost" href="#module-' + prev.n + '">Précédent</a>' : '')
+      + (next && next.ok ? '<a class="btn ghost" href="#module-' + next.n + '">Module ' + next.n + '</a>' : '<a class="btn ghost" href="#accueil">Tous les modules</a>')
+      + '</div>';
+    document.getElementById('fin').addEventListener('click', function(){
+      done(n, true); this.disabled = true; this.textContent = 'Module terminé';
+    });
+  }
+
+  function route(){
+    var m = /^#module-(\d+)$/.exec(location.hash);
+    var n = m ? parseInt(m[1], 10) : 0;
+    var meta = MODULES[n-1];
+    if(!meta || !meta.ok){ home(); window.scrollTo(0,0); return; }
+    if(REG[n]){ lesson(n); window.scrollTo(0,0); return; }
+    view.innerHTML = '<p class="loading">Chargement du module ' + n + '…</p>';
+    var s = document.createElement('script');
+    s.src = 'modules/m' + n + '.js';
+    s.onload = function(){ if(REG[n]){ lesson(n); window.scrollTo(0,0); } };
+    s.onerror = function(){ view.innerHTML = '<p class="loading">Ce module n\'a pas pu se charger. Rechargez la page, puis réessayez.</p><p><a class="btn ghost" href="#accueil">Tous les modules</a></p>'; };
+    document.head.appendChild(s);
+  }
+
+  view.addEventListener('click', function(e){
+    var b = e.target.closest('.quiz button');
+    if(!b) return;
+    var q = b.closest('.quiz'), good = q.getAttribute('data-ok'), fb = q.querySelector('.fb');
+    q.querySelectorAll('button').forEach(function(x){
+      x.classList.remove('ko');
+      if(x.getAttribute('data-k') === good) x.classList.add('ok');
+    });
+    var right = b.getAttribute('data-k') === good;
+    if(!right) b.classList.add('ko');
+    fb.className = 'fb' + (right ? '' : ' no');
+    fb.innerHTML = '<b>' + (right ? 'Exact. ' : 'Pas tout à fait. ') + '</b>' + q.getAttribute('data-why');
+    fb.hidden = false;
+  });
+
+  window.ACA = { add: function(n, mod){ REG[n] = mod; } };
+  window.addEventListener('hashchange', route);
+  route();
+})();
+</script>
+</body>
+</html>
